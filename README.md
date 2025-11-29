@@ -1,8 +1,8 @@
-Svasthya — AI-Driven Post-Consultancy Assistant
+**Svasthya — AI-Driven Post-Consultancy Assistant**
 
 Svasthya is an intelligent healthcare support system designed to help patients seamlessly manage their post-consultation activities. It leverages multiple AI agents, LLMs, and blockchain technology to deliver an integrated and secure healthcare experience.
 
-Features
+**Features**
 1. AI Agent for Post-Consultation Management
 
 Accepts live recorded audio or uploaded voice files.
@@ -65,7 +65,7 @@ Hashes of medical reports
 
 Guarantees transparency, auditability, and patient privacy.
 
-🛠️ Tech Stack
+** Tech Stack**
 Component	Technology
 Frontend	React / React Native (Expo)
 Backend	Node.js / Python FastAPI (depending on your project)
@@ -124,7 +124,7 @@ Stores hashed summaries.
 
 Provides immutable digital proof of medical instructions.
 
- How It Works (Flow)
+** How It Works (Flow)**
 
 Patient records or uploads a consultation audio.
 
@@ -138,7 +138,7 @@ Reports can be uploaded in text form for AI analysis.
 
 All important logs stored securely on blockchain.
 
-🧪 Future Improvements
+** Future Improvements**
 
 Image-based report analysis (X-rays, scans)
 
@@ -148,7 +148,7 @@ Offline functionality
 
 Integration with hospital systems (EMR/EHR)
 
-🤝 Contributors
+**Contributors**
 
 Aaryan Shetty
 Kedar Sarnobat
