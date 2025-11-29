@@ -1,50 +1,155 @@
-# Welcome to your Expo app 👋
+Svasthya — AI-Driven Post-Consultancy Assistant
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Svasthya is an intelligent healthcare support system designed to help patients seamlessly manage their post-consultation activities. It leverages multiple AI agents, LLMs, and blockchain technology to deliver an integrated and secure healthcare experience.
 
-## Get started
+Features
+1. AI Agent for Post-Consultation Management
 
-1. Install dependencies
+Accepts live recorded audio or uploaded voice files.
 
-   ```bash
-   npm install
-   ```
+Converts speech to text using STT pipeline.
 
-2. Start the app
+Summarizes the doctor–patient conversation.
 
-   ```bash
-   npx expo start
-   ```
+Automatically generates:
 
-In the output, you'll find options to open the app in a
+Medication reminders
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+Follow-up schedules
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+Lifestyle instructions
 
-## Get a fresh project
+Alerts and health routines
 
-When you're ready, run:
+Helps reduce patient forgetfulness and improves treatment adherence.
 
-```bash
-npm run reset-project
-```
+2. AI Health Chatbot (General Queries)
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+A separate conversational chatbot designed for general medical information:
 
-## Learn more
+Provides symptom explanations
 
-To learn more about developing your project with Expo, look at the following resources:
+Lists precautions and risk factors
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Suggests common treatments
 
-## Join the community
+Offers safe, validated general health knowledge
 
-Join our community of developers creating universal apps.
+⚠️ This chatbot does not replace a medical professional. It is for informational purposes only.
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+3. LLM-Based Medical Report Analyzer
+
+Works on text-based medical reports (PDF text, extracted doc text, etc.)
+
+Supports:
+
+Understanding report parameters
+
+Explaining anomalies
+
+Highlighting critical observations
+
+Does not support image-based reports (X-rays, scans, photos).
+
+4. Blockchain for Secure Healthcare Data
+
+Ensures integrity and tamper-proof storage of sensitive health interactions.
+
+Stores:
+
+Encounter summaries
+
+Reminder logs
+
+Hashes of medical reports
+
+Guarantees transparency, auditability, and patient privacy.
+
+🛠️ Tech Stack
+Component	Technology
+Frontend	React / React Native (Expo)
+Backend	Node.js / Python FastAPI (depending on your project)
+AI Models	Whisper / OpenAI / Local LLMs
+Summarization	Large Language Models (instruction-tuned)
+Reminders	Cron jobs / Cloud Scheduler
+Blockchain	Ethereum / Polygon / Hyperledger (whichever you choose)
+Core Modules
+1️ Speech-to-Text Module
+
+Converts patient audio to clean, structured text.
+
+Error-handled for multiple accents and noise.
+
+2️ Summarizer & Instruction Extractor
+
+Extracts tasks directly from medical conversations.
+
+Creates:
+
+To-do lists
+
+Medication cycles
+
+Follow-up events
+
+3️ Patient Reminder Scheduler
+
+Sends reminders via:
+
+App notifications
+
+SMS / WhatsApp (optional)
+
+Tracks completion history.
+
+4️ Health Chatbot
+
+Lightweight LLM designed for general medical knowledge.
+
+Trained on symptoms, diseases, precautions, and treatments.
+
+5️ Report Analyzer
+
+Converts text-based reports into:
+
+Easy-to-understand explanations
+
+Risk flags
+
+Doctor–patient discussion points
+
+6️ Blockchain Ledger
+
+Stores hashed summaries.
+
+Provides immutable digital proof of medical instructions.
+
+ How It Works (Flow)
+
+Patient records or uploads a consultation audio.
+
+AI converts speech → text → summarized instructions.
+
+Reminder engine creates a personalized healing schedule.
+
+Patient interacts with chatbot for general queries.
+
+Reports can be uploaded in text form for AI analysis.
+
+All important logs stored securely on blockchain.
+
+🧪 Future Improvements
+
+Image-based report analysis (X-rays, scans)
+
+Multilingual audio support
+
+Offline functionality
+
+Integration with hospital systems (EMR/EHR)
+
+🤝 Contributors
+
+Aaryan Shetty
+Kedar Sarnobat
+Raj Aryan
