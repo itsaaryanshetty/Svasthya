@@ -48,6 +48,6 @@ Future Improvements
 - Offline functionality.
 - Integration with hospital EMR/EHR systems.
 Contributors
-- Aaryan Shetty — Project Lead
-Disclaimer
-Svasthya is designed to support patients but not to replace certified medical practitioners. All generated advice is for informational assistance only.
+- Aaryan Shetty
+- Kedar Sarnobat
+- Raj Aryan
