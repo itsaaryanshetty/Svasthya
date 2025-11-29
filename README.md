@@ -1,53 +1,82 @@
-Svasthya — AI-Driven Post-Consultancy Assistant
-Overview
-Svasthya is an intelligent healthcare support system designed to help patients seamlessly manage their post-consultation activities. It leverages multiple AI agents, LLMs, and blockchain technology to deliver an integrated and secure healthcare experience.
+Svasthya — AI-Powered Post-Consultation Health Companion 💙
+
+Svasthya transforms post-consultation care into a continuous, intelligent, and secure experience.  
+It captures doctor-patient consultations (with consent), transcribes audio, extracts actionable tasks, manages reminders & follow-ups, unifies medical records, and produces tamper-proof health data — all in one platform.
+
+📋 Table of Contents
+
+- [Features](#features)  
+- [Why Svasthya Matters](#why-svasthya-matters)  
+- [Tech Stack](#tech-stack)  
+- [Architecture Overview](#architecture-overview)  
+- [Getting Started](#getting-started)  
+  - [Prerequisites](#prerequisites)  
+  - [Setup & Run Backend](#setup--run-backend)  
+  - [Setup & Run Mobile App](#setup--run-mobile-app)  
+- [Usage Workflow](#usage-workflow)  
+- [Roadmap & Planned Enhancements](#roadmap--planned-enhancements)  
+- [Contributing](#contributing)  
+- [License](#license)  
+
+---
+
 Features
-1. AI Agent for Post-Consultation Management
-- Accepts live recorded audio or uploaded voice files.
-- Converts speech to text using STT pipeline.
-- Summarizes the doctor–patient conversation.
-- Automatically generates reminders, schedules, and follow-up instructions.
-- Helps patients adhere to treatment routines effectively.
-2. AI Health Chatbot (General Queries)
-A separate conversational chatbot that provides general medical information such as symptoms, precautions, risk factors, and common treatments. This chatbot is for informational purposes only and does not replace medical professionals.
-3. LLM-Based Medical Report Analyzer
-Analyzes text-based medical reports, explains parameters, identifies anomalies, and highlights critical observations. Currently supports only text-based reports and does not analyze images.
-4. Blockchain Integration
-Ensures secure, tamper-proof storage of sensitive medical data. Stores hashed summaries, reminders, and medical report metadata for transparency and privacy.
+
+- 🎤 **Consultation Capture & Transcription** — record doctor visits, convert audio to text via STT (e.g. Whisper)  
+- 🧠 **AI-Powered CTA Extraction** — parse transcript with LLM (Gemini/OpenAI) to generate structured tasks (medications, tests, follow-ups, lifestyle advice)  
+- ✅ **Interactive Task Management** — users can accept, edit, delete, or add custom tasks; set reminders or calendar events  
+- 🔄 **Smart Automation** — optionally auto-book referrals, lab tests, medicine refills (with consent)  
+- 📄 **Unified Health Record Storage** — aggregate files: PDFs, lab reports, images, wearable data into a coherent health timeline  
+- 🔒 **Tamper-Proof Verification** — hash and anchor records on blockchain for integrity and verifiability  
+- 📲 **Cross-Platform Mobile App** — built with React Native + Expo for Android/iOS  
+- 🔗 **Extensible Integrations** — designed to plug into labs, pharmacies, insurers, wearable providers, and clinical IT systems  
+
+🏥 Why Svasthya Matters
+
+- Patients frequently forget 40–80% of instructions given during doctor visits — leading to poor adherence, missed follow-ups, and worsening chronic conditions.  
+- Medical history is often fragmented across PDFs, chats, lab reports, and devices — impairing continuity of care.  
+- For insurers and healthcare providers, unverifiable or forged records create risks, fraud, and inefficiencies.  
+- Svasthya closes these gaps with AI + automation + cryptographic verification — enabling continuous, trusted care outside the clinic.  
+
 Tech Stack
-Component	Technology
-Frontend	React / React Native (Expo)
-Backend	Node.js / Python FastAPI
-AI Models	Whisper / OpenAI / Local LLMs
-Summarization	Instruction-tuned LLMs
-Reminders	Cron Jobs / Cloud Scheduler
-Blockchain	Ethereum / Polygon / Hyperledger
-Core Modules
-1. Speech-to-Text Module
-Converts patient audio to structured text with noise handling.
-2. Summarizer & Instruction Extractor
-Extracts tasks and medical instructions from consultations.
-3. Patient Reminder Scheduler
-Creates and manages personalized reminders and routines.
-4. Health Chatbot
-Provides general health information and guidance.
-5. Report Analyzer
-Explains text-based report findings and flags critical points.
-6. Blockchain Ledger
-Stores hashed summaries for secure, immutable storage.
-How It Works (Flow)
-1. Patient records or uploads a consultation audio.
-2. AI converts speech to text and summarizes key instructions.
-3. Reminder engine generates personalized health schedules.
-4. Patient interacts with chatbot for general queries.
-5. Reports can be uploaded in text form for further analysis.
-6. All important logs are stored securely on the blockchain.
-Future Improvements
-- Image-based report analysis.
-- Multilingual audio support.
-- Offline functionality.
-- Integration with hospital EMR/EHR systems.
-Contributors
-- Aaryan Shetty
-- Kedar Sarnobat
-- Raj Aryan
+
+| Layer | Technologies / Tools |
+|-------|----------------------|
+| Backend API | FastAPI + Uvicorn (Python) |
+| Speech-to-Text | Whisper (local or CLI) |
+| LLM Processing | Gemini / OpenAI or equivalent LLM via HTTP API |
+| Data Storage | Database (PostgreSQL / Mongo / your choice) + secure file storage |
+| Blockchain Anchoring | Any ledger/blockchain — for hash anchoring |
+| Mobile App | React Native + Expo (JavaScript / TypeScript) |
+| Notifications & Calendar | Expo Notifications API, Expo Calendar API |
+| Integrations | REST APIs / Webhooks — labs, pharmacies, insurers, wearables |
+
+🏗 Architecture Overview
+
+[ Mobile App (React Native + Expo) ] <─── HTTPS ───> [ Backend (FastAPI) ]
+│ │
+│ Upload audio / file │
+└───► /upload-audio endpoint │
+├─► STT (Whisper) → transcript │
+├─► LLM → CTA generation │
+└─► File store + blockchain anchor │
+│ │
+CTA Engine / Automation → reminders, bookings, notifications
+│
+Optional integrations → labs, pharmacies, insurers, wearables
+
+🔄 Usage Workflow
+
+User opens mobile app → records or uploads consultation audio (with consent)
+Audio sent to backend → Whisper → transcript
+Transcript sent to LLM → structured CTAs generated
+CTAs returned to app → user reviews and confirms/edits/deletes tasks
+On confirmation → reminders or calendar events scheduled / optional smart bookings triggered
+Additional data (lab reports, PDFs, wearable data) can be uploaded → stored chronologically
+Records hashed and anchored on blockchain → verifiable, tamper-proof health history
+Optionally share summaries/records with doctors, labs, insurers
+
+Contributors:
+Aaryan Shetty
+Kedar Sarnobat
+Raj Aryan
