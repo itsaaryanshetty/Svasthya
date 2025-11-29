@@ -1,98 +1,129 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
-
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
+import { StyleSheet, ScrollView, View, TouchableOpacity, Image } from 'react-native';
+import { ThemedText } from '../../components/themed-text';
+import { ThemedView } from '../../components/themed-view';
+import { Colors } from '@/constants/Color';
+import { useColorScheme } from '@/hooks/use-color-schema';
+import { IconSymbol } from '../../components/ui/icon-symbol';
 import { Link } from 'expo-router';
 
 export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+  const colorScheme = useColorScheme() ?? 'light';
+  const theme = Colors[colorScheme];
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+  return (
+    <ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
+      <View style={styles.header}>
+        <ThemedText type="title" style={styles.greeting}>Hi Arjun</ThemedText>
+        <TouchableOpacity>
+          <IconSymbol name="bell" size={24} color={theme.icon} />
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.cardsContainer}>
+        {/* Upcoming Appointment Card */}
+        <View style={[styles.card, { backgroundColor: theme.cardBackground }]}>
+          <View style={styles.cardContent}>
+            <View style={styles.cardText}>
+              <ThemedText type="subtitle">Upcoming appointment</ThemedText>
+              <ThemedText style={{ color: theme.primary, marginTop: 4 }}>Dr. Sharma, Cardiology</ThemedText>
+              <TouchableOpacity style={[styles.button, { backgroundColor: theme.secondary, marginTop: 12 }]}>
+                <ThemedText style={{ color: theme.primary, fontWeight: '600' }}>View</ThemedText>
+              </TouchableOpacity>
+            </View>
+            <Image
+              source={{ uri: 'https://img.freepik.com/free-vector/doctor-examining-patient-clinic-illustrated_23-2148856559.jpg' }}
+              style={styles.cardImage}
+            />
+          </View>
+        </View>
+
+        {/* Today's Medication Card */}
+        <View style={[styles.card, { backgroundColor: theme.cardBackground }]}>
+          <View style={styles.cardContent}>
+            <View style={styles.cardText}>
+              <ThemedText type="subtitle">Today's medication</ThemedText>
+              <ThemedText style={{ color: theme.icon, marginTop: 4 }}>2 pills, 10:00 AM</ThemedText>
+              <TouchableOpacity style={[styles.button, { backgroundColor: theme.secondary, marginTop: 12 }]}>
+                <ThemedText style={{ color: theme.primary, fontWeight: '600' }}>View</ThemedText>
+              </TouchableOpacity>
+            </View>
+            <Image
+              source={{ uri: 'https://img.freepik.com/free-vector/pills-bottle-illustration_1284-16856.jpg' }}
+              style={styles.cardImage}
+            />
+          </View>
+        </View>
+
+        {/* Recent Doctor Visit Summary Card */}
+        <Link href="/(tabs)/profile" asChild>
+          <TouchableOpacity>
+            <View style={[styles.card, { backgroundColor: theme.cardBackground }]}>
+              <View style={styles.cardContent}>
+                <View style={styles.cardText}>
+                  <ThemedText type="subtitle">Recent doctor visit summary</ThemedText>
+                  <ThemedText style={{ color: theme.icon, marginTop: 4 }}>General checkup, normal</ThemedText>
+                  <View style={[styles.button, { backgroundColor: theme.secondary, marginTop: 12 }]}>
+                    <ThemedText style={{ color: theme.primary, fontWeight: '600' }}>View</ThemedText>
+                  </View>
+                </View>
+                <Image
+                  source={{ uri: 'https://img.freepik.com/free-vector/medical-report-concept-illustration_114360-2234.jpg' }}
+                  style={styles.cardImage}
+                />
+              </View>
+            </View>
+          </TouchableOpacity>
+        </Link>
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
+  container: {
+    flex: 1,
+    padding: 20,
+  },
+  header: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    gap: 8,
+    marginTop: 40,
+    marginBottom: 20,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  greeting: {
+    fontSize: 28,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  cardsContainer: {
+    gap: 16,
+  },
+  card: {
+    borderRadius: 20,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  cardContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  cardText: {
+    flex: 1,
+    marginRight: 10,
+  },
+  cardImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 10,
+  },
+  button: {
+    paddingVertical: 8,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+    alignSelf: 'flex-start',
   },
 });
