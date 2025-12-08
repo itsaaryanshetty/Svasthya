@@ -104,8 +104,10 @@ def chat(request: ChatRequest) -> ChatResponse:
             detail="GEMINI_API_KEY is not set on the server.",
         )
 
+    # Build contents array for Gemini API
     contents = []
 
+    # Add system prompt as first user message if provided
     if request.system_prompt:
         contents.append(
             {
@@ -113,14 +115,25 @@ def chat(request: ChatRequest) -> ChatResponse:
                 "parts": [{"text": request.system_prompt}],
             }
         )
+        # Add a model response to acknowledge system prompt (Gemini needs alternating roles)
+        contents.append(
+            {
+                "role": "model",
+                "parts": [{"text": "I understand. I'm ready to help."}],
+            }
+        )
 
-    contents.extend(
-        {
-            "role": msg.role,
-            "parts": [{"text": msg.text}],
-        }
-        for msg in request.messages
-    )
+    # Add user messages - convert "model" role to "user" for Gemini API
+    for msg in request.messages:
+        # Gemini API uses "user" and "model" roles
+        # Our ChatMessage uses "user" and "model" which matches, but ensure we use correct role
+        role = "user" if msg.role == "user" else "model"
+        contents.append(
+            {
+                "role": role,
+                "parts": [{"text": msg.text}],
+            }
+        )
 
     try:
         response = requests.post(
@@ -129,30 +142,38 @@ def chat(request: ChatRequest) -> ChatResponse:
             json={"contents": contents},
             timeout=60,
         )
-    except requests.RequestException as exc:  # pragma: no cover - network error
+    except requests.RequestException as exc:
         raise HTTPException(
             status_code=502,
-            detail=f"Error calling Gemini API: {exc}",
+            detail=f"Error calling Gemini API: {str(exc)}",
         ) from exc
 
     if not response.ok:
         try:
             error_payload = response.json()
-        except Exception:  # pragma: no cover - best effort
-            error_payload = response.text
+            error_detail = error_payload.get("error", {}).get("message", str(error_payload))
+        except Exception:
+            error_detail = response.text
         raise HTTPException(
             status_code=response.status_code,
-            detail={"message": "Gemini API error", "data": error_payload},
+            detail=f"Gemini API error: {error_detail}",
         )
 
     data = response.json()
 
-    parts = (
-        data.get("candidates", [{}])[0]
-        .get("content", {})
-        .get("parts", [])
-    )
-    reply_text = "".join(part.get("text", "") for part in parts).strip()
+    # Extract reply from Gemini response
+    try:
+        candidates = data.get("candidates", [])
+        if not candidates:
+            raise HTTPException(status_code=502, detail="No candidates in Gemini response")
+        
+        parts = candidates[0].get("content", {}).get("parts", [])
+        reply_text = "".join(part.get("text", "") for part in parts).strip()
+    except (KeyError, IndexError) as e:
+        raise HTTPException(
+            status_code=502,
+            detail=f"Unexpected Gemini response format: {str(e)}",
+        )
 
     if not reply_text:
         reply_text = "Sorry, I could not generate a response."
@@ -219,6 +240,22 @@ async def transcribe_summarize(
                     pass
         except Exception:
             pass
+
+
+@app.get("/")
+def root():
+    """Health check endpoint"""
+    return {"status": "ok", "message": "Chatbot API is running"}
+
+
+@app.get("/health")
+def health():
+    """Detailed health check"""
+    return {
+        "status": "ok",
+        "gemini_api_key_set": GEMINI_API_KEY is not None,
+        "gemini_model": GEMINI_MODEL,
+    }
 
 
 if __name__ == "__main__":
