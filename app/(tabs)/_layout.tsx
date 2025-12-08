@@ -18,10 +18,10 @@ const _layout = () => {
               />
             );
           }
-          if (route.name === 'search') {
+          if (route.name === 'records') {
             return (
               <Ionicons
-                name={focused ? 'search' : 'search-outline'}
+                name={focused ? 'document-text' : 'document-text-outline'}
                 size={size}
                 color={color}
               />

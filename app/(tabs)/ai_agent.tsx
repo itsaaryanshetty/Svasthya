@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -11,8 +11,24 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const BACKEND_URL =
-  process.env.EXPO_PUBLIC_CHATBOT_BACKEND_URL ?? 'http://localhost:8000/chat';
+// Handle URL for different platforms (Android emulator needs 10.0.2.2)
+const RAW_BACKEND_URL = process.env.EXPO_PUBLIC_CHATBOT_BACKEND_URL;
+const FALLBACK_BASE = Platform.OS === 'android' ? 'http://10.0.2.2:8000' : 'http://localhost:8000';
+
+let BACKEND_BASE = FALLBACK_BASE;
+if (RAW_BACKEND_URL) {
+  if (RAW_BACKEND_URL.includes('0.0.0.0')) {
+    BACKEND_BASE = RAW_BACKEND_URL.replace(
+      '0.0.0.0',
+      Platform.OS === 'android' ? '10.0.2.2' : 'localhost'
+    );
+  } else {
+    // Remove /chat if present, we'll add it back
+    BACKEND_BASE = RAW_BACKEND_URL.replace('/chat', '').replace('/chat/', '');
+  }
+}
+
+const BACKEND_URL = `${BACKEND_BASE}/chat`;
 
 type ChatBubble = {
   id: string;
@@ -25,6 +41,16 @@ const ai_agent = () => {
   const [messages, setMessages] = useState<ChatBubble[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const scrollViewRef = useRef<ScrollView>(null);
+
+  // Auto-scroll to bottom when new messages arrive
+  useEffect(() => {
+    if (messages.length > 0) {
+      setTimeout(() => {
+        scrollViewRef.current?.scrollToEnd({ animated: true });
+      }, 100);
+    }
+  }, [messages.length]);
 
   const sendMessage = async () => {
     const trimmed = userInput.trim();
@@ -41,6 +67,12 @@ const ai_agent = () => {
     setMessages((prev) => [...prev, userMsg]);
 
     try {
+      // Add timeout to prevent hanging requests
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+
+      console.log('Sending request to:', BACKEND_URL);
+      
       const res = await fetch(BACKEND_URL, {
         method: 'POST',
         headers: {
@@ -51,11 +83,21 @@ const ai_agent = () => {
           system_prompt:
             'You are a helpful AI medical assistant which provides details about the diseases, symptoms, and treatments for the diseases. Be concise and friendly.',
         }),
+        signal: controller.signal,
       });
+
+      clearTimeout(timeoutId);
 
       if (!res.ok) {
         const text = await res.text();
-        throw new Error(text || 'Backend request failed');
+        let errorMsg = text || `Backend request failed with status ${res.status}`;
+        try {
+          const errorJson = JSON.parse(text);
+          errorMsg = errorJson.detail || errorJson.message || errorMsg;
+        } catch {
+          // Not JSON, use text as is
+        }
+        throw new Error(errorMsg);
       }
 
       const data = (await res.json()) as { reply?: string };
@@ -68,7 +110,14 @@ const ai_agent = () => {
       setMessages((prev) => [...prev, botMsg]);
       setUserInput('');
     } catch (e: any) {
-      setError(e?.message ?? 'Something went wrong.');
+      console.error('Chat error:', e);
+      if (e.name === 'AbortError') {
+        setError('Request timed out. Please try again.');
+      } else if (e.message?.includes('Network request failed') || e.message?.includes('Failed to fetch')) {
+        setError('Cannot connect to server. Make sure the backend is running on port 8000.');
+      } else {
+        setError(e?.message ?? 'Something went wrong.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -85,8 +134,10 @@ const ai_agent = () => {
           <Text style={styles.title}>General Chatbot</Text>
 
           <ScrollView
+            ref={scrollViewRef}
             style={styles.messages}
             contentContainerStyle={styles.messagesContent}
+            keyboardShouldPersistTaps="handled"
           >
             {messages.length === 0 && !error && (
               <Text style={styles.placeholderText}>
